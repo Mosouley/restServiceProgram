@@ -50,6 +50,13 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>1.6.0</version>
         </dependency>
+        
+        <!-- TOKEN  -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.0</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>ServiceProgrammeTP</finalName>

@@ -3,10 +3,12 @@
  */
 package com.bootcamp.rest.security;
 
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
-import io.jsonwebtoken.*;
 import java.util.Date; 
 public class JavaJsonWebToken {
     
