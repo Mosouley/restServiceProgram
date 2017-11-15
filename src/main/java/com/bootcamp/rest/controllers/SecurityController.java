@@ -43,14 +43,11 @@ public class SecurityController {
             String token="";
             try {
               token=jwt.createJWT(iat, subject, tm); 
-              SuccessMessage.message("\n Token bien généré !");
+              resp=SuccessMessage.message("\n Authentification réussie.Token bien généré ! \n Retenez bien ce token \n"+token);
             } catch (Exception e) {
                 resp=TokenNotGenerateException.generateTokenException();
             }
-            
-            
-            resp = SuccessMessage.message("\n Authentification réussie. Retenez bien ce token \n"+token);
-            
+                                   
         }else  {
             resp = AuthentificationException.auth("Echec de l'authentification");
         }
