@@ -5,6 +5,7 @@ import com.bootcamp.entities.User;
 import com.bootcamp.jpa.UserRepository;
 import com.bootcamp.rest.exception.AuthentificationException;
 import com.bootcamp.rest.exception.SuccessMessage;
+import com.bootcamp.rest.exception.TokenNotGenerateException;
 import com.bootcamp.rest.security.JavaJsonWebToken;
 import com.bootcamp.service.crud.UserCRUD;
 import java.sql.SQLException;
@@ -39,7 +40,14 @@ public class SecurityController {
             String subject=user.toString();
             
             // generation du token
-            String token=jwt.createJWT(iat, subject, tm);
+            String token="";
+            try {
+              token=jwt.createJWT(iat, subject, tm); 
+              SuccessMessage.message("\n Token bien généré !");
+            } catch (Exception e) {
+                resp=TokenNotGenerateException.generateTokenException();
+            }
+            
             
             resp = SuccessMessage.message("\n Authentification réussie. Retenez bien ce token \n"+token);
             

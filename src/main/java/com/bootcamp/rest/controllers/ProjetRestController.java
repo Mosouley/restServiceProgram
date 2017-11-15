@@ -1,6 +1,6 @@
 
 package com.bootcamp.rest.controllers;
-/*
+
 import com.bootcamp.rest.Designs.Critere;
 import com.bootcamp.entities.Impact;
 import com.bootcamp.entities.Projet;
@@ -8,8 +8,10 @@ import com.bootcamp.jpa.ProjetRepository;
 import com.bootcamp.rest.exception.NotCreateException;
 import com.bootcamp.rest.exception.ReturnMsgResponse;
 import com.bootcamp.rest.exception.SuccessMessage;
+import com.bootcamp.rest.exception.TokenVerifyException;
 import com.bootcamp.rest.exception.UnknownException;
 import com.bootcamp.rest.security.JavaJsonWebToken;
+import com.bootcamp.service.crud.ProjetCRUD;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -25,7 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -38,9 +39,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 
 
-@Path("/projet")*/
+@Path("/projet")
 public class ProjetRestController {
-    /*
+    
     ProjetRepository pr = new ProjetRepository("tpRest-mysql");
         
     List<Projet> liste = new ArrayList<Projet>();
@@ -55,15 +56,17 @@ public class ProjetRestController {
     //de filtre ou de pagination envoyé par l'user suivant un format donnee
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    //@Produces(MediaType.APPLICATION_JSON)
     @Path("/all")
     public Response getAllProjets(Critere c, @HeaderParam("token") String token) { 
        
         try {
             //verifier la validité du token
+            jt.parseJWT(token);
+            resp=SuccessMessage.message("\n Verification du token a succes");
             if(!c.isDefine()) {  // on verifie si les elements de criteres ont etes rensignes
             try { // si non, on envoie la liste sans trie, ni ordre, ni limite
-                liste = pr.findAll();  
+                liste = ProjetCRUD.findAll();  
                 return Response.status(200).entity(liste).build();
             } catch (Exception e) {
                 resp=UnknownException.unknownException(e);
@@ -86,6 +89,7 @@ public class ProjetRestController {
              
         }
         } catch (Exception e) {
+            resp=TokenVerifyException.tokenException();
         }
               
         return resp;
@@ -95,8 +99,11 @@ public class ProjetRestController {
     @POST
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(Projet projet) throws SQLException {      
-    //verifie si l'objet projet existe avant d'enregistrer
+    public Response create(Projet projet, @HeaderParam("token") String token) throws SQLException { 
+        try {
+            jt.parseJWT(token);
+            SuccessMessage.message("\n Verification du token avec succes !");
+            //verifie si l'objet projet existe avant d'enregistrer
     if(projet.isExist()){
         resp=ReturnMsgResponse.message("l'objet projet que vous tentez de creer existe deja");
     }else{
@@ -104,7 +111,7 @@ public class ProjetRestController {
         // verifie si la liste est vide ( si impact a ete renseigne lors de l'insertion des valeurs)
         if(iliste.isEmpty()){
          try {                                
-                    pr.create(projet);
+                    ProjetCRUD.create(projet);
                     resp=SuccessMessage.message("Bien cree");
                 } catch (Exception e) {
                     resp=NotCreateException.notCreateException("Erreur lors de la creation", e);
@@ -117,7 +124,7 @@ public class ProjetRestController {
             }else{
             impact.setProjet(projet);
              try {                                
-                    pr.create(projet);
+                    ProjetCRUD.create(projet);
                     resp=SuccessMessage.message("Bien cree");
                 } catch (Exception e) {
                     resp=NotCreateException.notCreateException("Erreur lors de la creation", e);
@@ -127,6 +134,10 @@ public class ProjetRestController {
         }
         
     }
+        } catch (Exception e) {
+            TokenVerifyException.tokenException();
+        }
+    
                 
         return resp;
     }
@@ -135,14 +146,20 @@ public class ProjetRestController {
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(Projet projet) throws SQLException {
-       
+    public Response update(Projet projet, @HeaderParam("token") String token) throws SQLException {
+       try {
+            jt.parseJWT(token);
+            SuccessMessage.message("\n Verification du token avec succes !");
             try {
-                pr.update(projet);
+                ProjetCRUD.update(projet);
                 resp=SuccessMessage.message("Mise a jour bien faite");
             } catch (Exception e) {
                 resp=NotCreateException.notCreateException("Erreur lors de la mise a jour", e);
             }
+        } catch (Exception e) {
+            TokenVerifyException.tokenException();
+        }
+            
                    
         return resp;
     }
@@ -150,24 +167,33 @@ public class ProjetRestController {
     // Service pour supprimer un projet quand on en a le droit
     @DELETE
     @Path("/delete/{id}")
-    public Response delete(@PathParam("id") int valeur) throws SQLException {                  
-                try {
+    public Response delete(@PathParam("id") int valeur, @HeaderParam("token") String token) throws SQLException {                  
+            try {
+            jt.parseJWT(token);
+            SuccessMessage.message("\n Verification du token avec succes !");
+            try {
                 Projet projet = pr.findById(valeur);
-                pr.delete(projet);
+                ProjetCRUD.delete(projet);
                 resp=SuccessMessage.message("Le projet d'id "+valeur+" a bien ete supprime");
             } catch (Exception e) {
                 resp=NotCreateException.notCreateException("Probleme lors de la suppression de projet d'id "+valeur,e);
             }
+        } catch (Exception e) {
+            TokenVerifyException.tokenException();
+        }   
+        
         
         return resp;    
     }
     
     //Servivce pour récuperer un projet par son id et le trier suivant un ou des attributs du choix de l'user
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    //@Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public Response findProjetByFields(@PathParam("id") int id,@QueryParam("fields") String fields) throws SQLException, IntrospectionException, InvocationTargetException, IllegalArgumentException, IllegalAccessException {
-
+    public Response findProjetByFields(@PathParam("id") int id,@QueryParam("fields") String fields, @HeaderParam("token") String token) throws SQLException, IntrospectionException, InvocationTargetException, IllegalArgumentException, IllegalAccessException {
+        try {
+            jt.parseJWT(token);
+            SuccessMessage.message("\n Verification du token avec succes !");
             try {   
         String[] rempli = fields.split(",");
         Projet proj = pr.findById(id);
@@ -180,6 +206,10 @@ public class ProjetRestController {
          resp=UnknownException.unknownException(e);
             }  
         
+        } catch (Exception e) {
+            TokenVerifyException.tokenException();
+        }
+            
        return resp;        
     }
     
@@ -187,27 +217,34 @@ public class ProjetRestController {
         @GET
         @Path("/search")
         @Produces("application/json")
-        public Response searchInProjet(@QueryParam("attrib") String attr, @QueryParam("value") String value) throws IntrospectionException, SQLException {
+        public Response searchInProjet(@QueryParam("attrib") String attr, @QueryParam("value") String value,@HeaderParam("token") String token) throws IntrospectionException, SQLException {
+            try {
+            jt.parseJWT(token);
+            SuccessMessage.message("\n Verification du token avec succes !");
             if(singleCheckAttribute(attr)){               
                 liste = pr.search(attr, value);
             return Response.status(200).entity(liste).build();
              }
-            return Response.status(200).entity("Probleme !!").build();
+            return Response.status(200).entity("Probleme lors de la recherche!!").build();
+        } catch (Exception e) {
+            TokenVerifyException.tokenException();
+        }
+          return resp;  
         }    
     
     // juste pour le debugage
     @GET
-    //@Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/list")
-    public Response getListProjets() throws LdapInvalidAttributeValueException {       
+    public Response getListProjets() {       
             
-        return Response.status(200).entity("\n Entry: "+getEntry()+"\n Token: "+getToken()).build();
+        return Response.status(200).entity("").build();
     }
      /*  Q U E L Q U E S   M E T H O D E S    U T I L E S   */
     
     
         // verifie si chaque elt d'une liste est egal a un elt donnee
-    /*
+    
      private boolean check(String[] fields, String field) {
        for (String field1 : fields) {
            if (field.equals(field1)) {
@@ -281,7 +318,18 @@ public class ProjetRestController {
                }
         }
              return responseMap;
+             
+           /*  
+             try {
+            jt.parseJWT(token);
+            SuccessMessage.message("\n Verification du token avec succes !");
+        } catch (Exception e) {
+            TokenVerifyException.tokenException();
+        }
+
+        */
        }
     
-    */
+    
+    
 }

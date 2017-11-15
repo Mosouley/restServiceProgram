@@ -27,6 +27,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.bootcamp.rest.controllers.ProgrammeRessource.class);
+        resources.add(com.bootcamp.rest.controllers.ProjetRestController.class);
         resources.add(com.bootcamp.rest.controllers.SecurityController.class);
     }
 
