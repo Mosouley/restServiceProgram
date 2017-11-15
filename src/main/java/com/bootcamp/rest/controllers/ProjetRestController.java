@@ -319,15 +319,6 @@ public class ProjetRestController {
         }
              return responseMap;
              
-           /*  
-             try {
-            jt.parseJWT(token);
-            SuccessMessage.message("\n Verification du token avec succes !");
-        } catch (Exception e) {
-            TokenVerifyException.tokenException();
-        }
-
-        */
        }
     
     

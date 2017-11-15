@@ -67,4 +67,18 @@ public class SecurityController {
             return false;
         }
     }
+    
+    // verification du token avant n'importe quelle tache dans n'importe qu'elle service
+    /*  
+             try {
+            jt.parseJWT(token);
+            SuccessMessage.message("\n Verification du token avec succes !");
+    
+                // to do  . . .
+    
+        } catch (Exception e) {
+            TokenVerifyException.tokenException();
+        }
+
+        */
 }
