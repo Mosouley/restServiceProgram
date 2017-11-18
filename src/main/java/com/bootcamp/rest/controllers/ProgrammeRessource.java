@@ -5,9 +5,11 @@ package com.bootcamp.rest.controllers;
 
 
 
+import com.bootcamp.entities.PhaseProgramme;
 import com.bootcamp.entities.Programme;
 import com.bootcamp.jpa.ProgrammeRepository;
 import com.bootcamp.model.Programmes;
+import com.bootcamp.service.crud.ProgrammeCRUD;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -42,17 +44,12 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author soul
  */
-@Path("v0/programmes")
+@Path("programmes")
 @Api(value = "programmes", description = "web service on all the programs available")
 public class ProgrammeRessource {
 
 
-     /**
-      * Need to instantiate a repository to retrieve datas
-      * based on the persistence unit create
-      */
-    ProgrammeRepository programmeRepository = new ProgrammeRepository("databasePU");
-
+    
     //Annotation JAX-RS2 that helps gather all the injected info
     @Context
     public UriInfo uriInfo;
@@ -85,7 +82,7 @@ public class ProgrammeRessource {
             //Method to access all the program
             List<Programme> programmes;
 
-            programmes = programmeRepository.findAll();
+            programmes = ProgrammeCRUD.findAll();
 
 
             //a collection of links to use hateaos
@@ -167,9 +164,10 @@ public class ProgrammeRessource {
     @GET
     @Path("/programme/{ref}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "To retrieve info on a given programme with its reference")
     public Response getById(@PathParam("ref") int ref) throws SQLException {
 
-        Programme programme = programmeRepository.findByPropertyUnique("reference", ref);
+        Programme programme = ProgrammeCRUD.findByPropertyUnique("reference", ref);
 
         if (programme != null) {
             programme.setSelf(
@@ -197,12 +195,13 @@ public class ProgrammeRessource {
     @GET
     @Path("/programme/param/{ref}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "To retrieve specific inof on a given program")
     public Response getByIdParam(@PathParam("ref") int ref, @QueryParam("fields") String fields) throws SQLException, IllegalArgumentException, IllegalAccessException, IntrospectionException, InvocationTargetException {
        //Trouver les champs de recherche Separes par une virgule
         String[] fieldArray = fields.split(",");
 
         //retrouver le seul programme dont la reference est
-        Programme programme = programmeRepository.findByPropertyUnique("reference", ref);
+        Programme programme = ProgrammeCRUD.findByPropertyUnique("reference", ref);
         //  Definissons un Map
         Map<String, Object> responseMap = new HashMap<>();
 
@@ -232,30 +231,34 @@ public class ProgrammeRessource {
 
     @POST
     @Path("/create")
-//    @Produces(MediaType.)
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Create a new programme with its gathered info")
     public Response create(Programme programme) {
         String output = " Felicitations objet cree avec succes : ";
-        try {
-            programmeRepository.create(programme);
-            return Response.status(200).entity(output + programme.getNom()).build();
-        } catch (SQLException ex) {
-            return Response.status(404).entity("Erreur: Objet non cree").build();
-        }
+        ProgrammeCRUD.create(programme);
+        return Response.status(200).entity(output + programme.getNom()).build();
     }
 //
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "update a given program")
     public Response update(Programme programme) {
         String output = " Felicitations Mise a jour effectuee avec succes pour : ";
-        try {
-            programmeRepository.update(programme);
-            return Response.status(200).entity(output + programme.getNom()).build();
-        } catch (SQLException ex) {
-            return Response.status(404).entity("Erreur: Objet non mis a jour").build();
-        }
+        ProgrammeCRUD.update(programme);
+        return Response.status(200).entity(output + programme.getNom()).build();
 
+    }
+      @POST
+    @Path("/create/phase")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "To create a new phase for a given program")
+    public Response addPhase(PhaseProgramme phaseprogramme) {
+        String output = " Felicitations objet cree avec succes : ";
+        ProgrammeCRUD.addPhase(phaseprogramme);
+        return Response.status(200).entity(output + phaseprogramme.getNom()).build();
     }
 //
     /**

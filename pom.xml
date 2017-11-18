@@ -8,49 +8,110 @@
     <name>ServiceProgrammeTP Webapp Deploy with jars</name>
     <url>http://maven.apache.org</url>
     <dependencies>
+ 
         <dependency>
+            <groupId>com.bootcamp</groupId>
+            <artifactId>serviceCRUD</artifactId>
+            <version>1.2.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+
+         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.bootcamp</groupId>
-            <artifactId>bootcampCRUD</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.23</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1212</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.6.1</version>
+
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+            <version>2.0.0</version>
             <type>jar</type>
+        </dependency>
+
+        <!--        <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j-version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>2.26</version>
-            <!--            <scope>runtime</scope>-->
+            <scope>runtime</scope>
         </dependency>
+
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.8.6</version>
         </dependency>
 
+
+        <!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1</version>
+            <type>jar</type>
+        </dependency>
+
+
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-jetty-servlet</artifactId>
             <version>2.26</version>
         </dependency>
-        <!--        //la version sup?rieure de galssfish jersey 2.26-b06 ne marche pas et aurait necessite d'ajouter ce qui suit
-        -->
+        <!--//la version superieure de galssfish jersey 2.26-b06 ne marche pas et aurait necessite d'ajouter ce qui suit-->
+
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
             <version>2.26</version>
         </dependency>
+<!--
 
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
             <version>1.6.0</version>
+
+        </dependency>-->
+
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jaxrs</artifactId>
+            <version>1.5.3</version>
         </dependency>
-        
+
         <!-- TOKEN  -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -69,7 +130,7 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <!--<failOnMissingWebXml>false</failOnMissingWebXml>-->
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
@@ -150,6 +211,7 @@
     </build>
   
     <properties>
+        <slf4j-version>1.7.12</slf4j-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 </project>

@@ -4,10 +4,6 @@
  */
 package com.bootcamp.rest.Designs;
 
-import com.bootcamp.rest.Designs.Pagination;
-import com.bootcamp.rest.Designs.Sort;
-import java.util.List;
-
 public class Critere {
     private Pagination pagination;
     private Sort sort;

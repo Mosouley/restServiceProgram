@@ -8,7 +8,7 @@ import com.bootcamp.entities.PhaseProgramme;
 import com.bootcamp.entities.Programme;
 import com.bootcamp.enums.EtatProgramme;
 import com.bootcamp.rest.controllers.ProgrammeRessource;
-import com.bootcamp.service.crud.PhaseProgrammeCRUD;
+
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -74,13 +74,13 @@ public class GenerateTableTest  {
     nPhase1.setNomPhase("Phase cree depuis le web service 4");
     List<PhaseProgramme> nomPhases=new ArrayList<>();
     //add some phases tu this project
-        PhaseProgrammeCRUD.create(nPhase1);
-        PhaseProgrammeCRUD.create(nPhase2);
-        PhaseProgrammeCRUD.create(nPhase3);
-        PhaseProgrammeCRUD.create(nPhase4);
+        uriProg.addPhase(nPhase1);
+        uriProg.addPhase(nPhase2);
+        uriProg.addPhase(nPhase3);
+        uriProg.addPhase(nPhase4);
 
 
-    PhaseProgramme phaseActuelle=nPhase2; // the programme is at begenning
+    PhaseProgramme phaseActuelle=nPhase3; // the programme is at begenning
 
     EtatProgramme etatProgramme=EtatProgramme.EXECUTION;
 
