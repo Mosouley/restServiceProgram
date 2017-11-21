@@ -7,12 +7,13 @@ package com.bootcamp.rest.controllers;
 
 import com.bootcamp.entities.PhaseProgramme;
 import com.bootcamp.entities.Programme;
-import com.bootcamp.jpa.ProgrammeRepository;
 import com.bootcamp.model.Programmes;
 import com.bootcamp.service.crud.ProgrammeCRUD;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -44,8 +45,8 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author soul
  */
+@Api(value = "programmes", description = "Operations about programmes")
 @Path("programmes")
-@Api(value = "programmes", description = "web service on all the programs available")
 public class ProgrammeRessource {
 
 
@@ -61,9 +62,13 @@ public class ProgrammeRessource {
       * @return
      * @throws java.sql.SQLException
      */
+    @ApiOperation(value = "To retrieve all the programmes and "
+            + "scroll to the previous and the next thanks following links", response = Programmes.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 400, message = "invalid page given"),
+        @ApiResponse(code = 404,message = "Programmes non found")})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "To retrieve all the programmes and scroll to the previous and the next thanks to Hateoas")
     public Programmes getProgrammes(@ApiParam(value = "start",required = true)  @QueryParam("start") int start,                  //
             @QueryParam("size") @DefaultValue("2") int size  ) throws SQLException{
 
@@ -160,11 +165,10 @@ public class ProgrammeRessource {
         
  
     }
-
+    @ApiOperation(value = "To retrieve info on a given programme with its reference")
     @GET
     @Path("/programme/{ref}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "To retrieve info on a given programme with its reference")
     public Response getById(@PathParam("ref") int ref) throws SQLException {
 
         Programme programme = ProgrammeCRUD.findByPropertyUnique("reference", ref);
@@ -192,10 +196,10 @@ public class ProgrammeRessource {
      * @throws IntrospectionException
      * @throws InvocationTargetException
      */
+    @ApiOperation(value = "To retrieve specific info on a given program")
     @GET
     @Path("/programme/param/{ref}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "To retrieve specific inof on a given program")
     public Response getByIdParam(@PathParam("ref") int ref, @QueryParam("fields") String fields) throws SQLException, IllegalArgumentException, IllegalAccessException, IntrospectionException, InvocationTargetException {
        //Trouver les champs de recherche Separes par une virgule
         String[] fieldArray = fields.split(",");

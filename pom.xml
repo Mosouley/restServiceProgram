@@ -5,10 +5,16 @@
     <artifactId>ServiceProgrammeTP</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>ServiceProgrammeTP Webapp Deploy with jars</name>
+    <name>ServiceProgrammeTP with webxml</name>
     <url>http://maven.apache.org</url>
+
     <dependencies>
- 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.bootcamp</groupId>
             <artifactId>serviceCRUD</artifactId>
@@ -27,17 +33,10 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.23</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>9.4.1212</version>
-        </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
             <version>2.6.1</version>
-
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -46,11 +45,6 @@
             <type>jar</type>
         </dependency>
 
-        <!--        <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.17</version>
-        </dependency>-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -75,7 +69,6 @@
             <version>2.8.6</version>
         </dependency>
 
-
         <!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
         <dependency>
             <groupId>javax.ws.rs</groupId>
@@ -83,11 +76,9 @@
             <version>2.1</version>
             <type>jar</type>
         </dependency>
-
-
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-jetty-servlet</artifactId>
+           <artifactId>jersey-container-servlet</artifactId>
             <version>2.26</version>
         </dependency>
         <!--//la version superieure de galssfish jersey 2.26-b06 ne marche pas et aurait necessite d'ajouter ce qui suit-->
@@ -97,19 +88,10 @@
             <artifactId>jersey-hk2</artifactId>
             <version>2.26</version>
         </dependency>
-<!--
-
-        <dependency>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-
-        </dependency>-->
-
         <dependency>
             <groupId>io.swagger</groupId>
-            <artifactId>swagger-jaxrs</artifactId>
-            <version>1.5.3</version>
+            <artifactId>swagger-jersey2-jaxrs</artifactId>
+            <version>1.5.16</version>
         </dependency>
 
         <!-- TOKEN  -->
@@ -121,6 +103,8 @@
     </dependencies>
     <build>
         <finalName>ServiceProgrammeTP</finalName>
+        <pluginManagement>
+
         <plugins>
             <plugin>
                 <!--<artifactId>maven-compiler-plugin</artifactId>-->
@@ -134,28 +118,11 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.4.7.v20170914</version>
-                <configuration>
-                    <!-- http://www.eclipse.org/jetty/documentation/current/jetty-maven-plugin.html -->
-                    <scanIntervalSeconds>3</scanIntervalSeconds>
-                    <!--By Default, jetty start on port 8080-->
-                    <httpConnector>
-                        <port>9090</port>
-                    </httpConnector>
-
-                </configuration>
+             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
             </plugin>
-<!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.4.3</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>			 download source code in Eclipse, best practice -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -165,52 +132,23 @@
                     <downloadJavadocs>false</downloadJavadocs>
                 </configuration>
             </plugin>
-
-            <!-- Set a compiler level -->
-<!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                </configuration>
-            </plugin>-->
-
-            <!-- Maven Assembly Plugin -->
-<!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4.1</version>
-                <configuration>
-                     get all project dependencies 
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                     MainClass in mainfest make a executable jar 
-                    <archive>
-                        <manifest>
-                            <mainClass>com.mkyong.core.utils.App</mainClass>
-                        </manifest>
-                    </archive>
-
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                         bind to the packaging phase 
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
-
+            <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>2.2</version>
+                    <configuration>
+                        <port>9090</port>
+                        <path>/</path>
+                        <useTestClasspath>false</useTestClasspath>
+                    </configuration>
+                </plugin>
+       
         </plugins>
+         </pluginManagement>
     </build>
   
     <properties>
+        <!--<servlet-api-version>2.5</servlet-api-version>-->
         <slf4j-version>1.7.12</slf4j-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
